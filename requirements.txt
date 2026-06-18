@@ -1,0 +1,26 @@
+# ============================================================
+# Vehicle-Data-Cloud 车云大数据平台 - 依赖清单
+# 安装方式: pip install -r requirements.txt --break-system-packages
+# ============================================================
+
+# 数据处理核心
+pandas>=2.0.0          # CSV 读取、数据清洗、汇总分析
+numpy>=1.24.0          # 数值计算
+
+# 定时任务调度
+schedule>=1.2.0        # 轻量级定时任务，支持 cron 表达式
+
+# 配置管理
+pyyaml>=6.0            # 解析 config.yaml 配置文件
+
+# HTTP 请求（从内网拉取 CSV）
+requests>=2.31.0       # HTTP/HTTPS 拉取文件
+urllib3>=2.0.0         # requests 底层依赖
+
+# 日志
+loguru>=0.7.0          # 比标准库 logging 更易用的日志
+
+# 报告生成
+jinja2>=3.1.0          # HTML 报告模板引擎
+matplotlib>=3.7.0      # 图表绘制
+openpyxl>=3.1.0        # Excel 读写（如需输出 xlsx）

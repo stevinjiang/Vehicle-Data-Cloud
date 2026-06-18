@@ -1,0 +1,112 @@
+# ============================================================
+# Vehicle-Data-Cloud 配置文件
+# 所有可调参数集中在这里，改配置不需改代码
+# ============================================================
+
+# ── 数据源配置 ──
+data_source:
+  # 内网 CSV 数据源 URL（支持列表，按顺序尝试）
+  urls:
+    - "http://internal-network.local/data/vehicle_data.csv"
+#    - "http://backup-server.local/data/vehicle_data.csv"  # 备用源
+
+  # 请求超时（秒）
+  timeout: 30
+
+  # 重试次数
+  retry: 3
+
+  # 请求间隔（秒），避免给服务器造成压力
+  interval: 5
+
+  # 认证方式: none / basic / token / api_key
+  auth_type: "none"
+
+  # basic 认证时填写
+  auth_username: ""
+  auth_password: ""
+
+  # token 或 api_key 认证时填写（放在 Header 里）
+  auth_token: ""
+  auth_header_name: "Authorization"  # 如 Authorization: Bearer xxx
+
+# ── 数据目录 ──
+paths:
+  # 原始 CSV 下载存放目录
+  raw_data_dir: "./data/raw"
+
+  # 处理后的数据
+  processed_data_dir: "./data/processed"
+
+  # 报告输出目录
+  report_dir: "./reports"
+
+  # 日志目录
+  log_dir: "./logs"
+
+# ── CSV 列名映射 ──
+# 如果 CSV 列名不标准，这里做映射，把实际列名映射到标准列名
+column_mapping:
+  # 标准名: 实际CSV列名
+  vin: "车架号"              # 车架号 (Vehicle Identification Number)
+  vehicle_model: "车型"       # 车型
+  software_version: "软件版本" # 软件版本号
+  fault_code: "故障码"        # 故障码
+  fault_level: "故障等级"     # 故障等级（严重/一般/轻微）
+  fault_desc: "故障描述"      # 故障描述
+  fault_time: "故障时间"      # 故障发生时间
+  mileage: "里程"            # 累计行驶里程
+  region: "地区"             # 所属地区
+  update_time: "数据更新时间" # 数据最后更新时间
+
+# ── 风险判定规则 ──
+risk_rules:
+  # 故障等级权重：用于计算风险分
+  fault_level_weight:
+    严重: 10     # 严重故障 → 10分
+    一般: 5      # 一般故障 → 5分
+    轻微: 2      # 轻微故障 → 2分
+
+  # 高危风险阈值：风险总分 ≥ 此值视为高危
+  high_risk_threshold: 20
+
+  # 软件版本风险评估
+  # 指定哪些版本被视为"过旧"（需要升级）
+  outdated_versions:
+    - "v1.0"
+    - "v1.1"
+    - "v1.2"
+
+  # 指定哪些版本有已知严重问题
+  known_bad_versions:
+    - "v1.0.3"   # 已知有刹车系统 Bug
+
+# ── TOP N 配置 ──
+top_n:
+  # 报告中最多的 TOP 问题数
+  top_issues: 10
+
+  # 报告中最多的 TOP 高风险车辆数
+  top_vehicles: 10
+
+# ── 定时任务配置 ──
+schedule:
+  # 运行频率，cron 风格: 分 时 日 月 星期
+  # 例如每天早上 6:00 执行: "0 6 * * *"
+  # 每天中午12:00: "0 12 * * *"
+  # 每4小时: "0 */4 * * *"
+  cron: "0 6 * * *"
+
+  # 是否在启动时立即执行一次
+  run_on_start: true
+
+# ── 报告输出配置 ──
+report:
+  # 报告格式: html / json / markdown / all
+  output_format: "html"
+
+  # 是否同时生成 Excel 汇总表
+  generate_excel: true
+
+  # 报告语言
+  language: "zh"
